@@ -4,19 +4,45 @@ import { SpectrumTextFieldProps, TextFieldRef } from "@react-types/textfield";
 import { useContext, useEffect, useState } from 'react';
 import { FormContext } from '../common/FormProvider';
 
+
+type Max = {
+  value:number,
+  message:string
+}
+
+function maxValidation(value:number,max?:Max){
+  if(max && max.value){
+    if(value && value>max.value){
+      return max.message
+    }  
+  }
+}
+
+type Min = {
+  value:number,
+  message:string
+}
+
+function minValidation(value:number,min:Max){
+  if(min && min.value){
+    if(value && value < min.value){
+      return min.message
+    }  
+  }
+}
+
 type InputProps<T> = SpectrumTextFieldProps & {
   id: keyof T,
   label: string, value?: string,
-  max?: {
-    value:number,
-    msg:string
-  },
+  max?: Max,
+  min?: Min,
   errorMessage?: string,
   validate?: (value, formData: T) => string
 }
 
 export function Input<T>(props: InputProps<T>) {
-  const { id, max, validate, errorMessage } = props;
+  const { id, max, validate, errorMessage, value } = props;
+  
   const { formData, onChange, setFormError, register } = useContext(FormContext);
   const [error, setError] = useState({
     errorMsg: ""
@@ -31,25 +57,16 @@ export function Input<T>(props: InputProps<T>) {
   }, []);
 
   function validateRequired(value){
-    if(!value){
+    if(!value && props.isRequired){
       return "Required"
     }
   }
 
-  function validateMaxValue(value){
-    if(max && max.value){
-      if(value>max.value){
-        return max.msg
-      }
-    }
-    return "";
-  }
-
-  function doValidate(value) {
+  function validateInput(value) {
     
     console.log('calling handleonchange', id, value);
 
-    let errorMsg = validateRequired(value) || validateMaxValue(value)
+    let errorMsg = validateRequired(value) || maxValidation(value,max)
 
     if (!errorMsg && validate) {
       errorMsg = validate(value, formData);
@@ -63,7 +80,7 @@ export function Input<T>(props: InputProps<T>) {
 
   function handleOnChange(value) {
 
-    const { isValid, errorMsg } = doValidate(value);
+    const { isValid, errorMsg } = validateInput(value);
 
     if (!isValid && errorMsg) {
       setError({

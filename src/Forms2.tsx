@@ -51,7 +51,9 @@ export default function Forms() {
   ]
 
   function validateRequired(value) {
-    return !!value;
+    if(!value){
+      return 'Required'
+    }
   }
 
   function setData(key,value,hasErrors){
@@ -101,9 +103,12 @@ export default function Forms() {
         type={"text"}
         onChange={handleNameChange}
         isRequired
+        label={"Name"}
         id={"name"}
+
         validationState={!errors["name"] ? "valid" : "invalid"}
-        label={"Name"}></TextField>
+        errorMessage={errors["name"] || "Error"} 
+        ></TextField>
 
       <TextField
         onChange={handleAgeChange}

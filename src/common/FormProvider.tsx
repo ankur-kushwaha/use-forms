@@ -32,7 +32,9 @@ function useForms<T>(): UseFormResponse<T> {
   const { formData, errors,onChange,validateForm } = useContext(FormContext)
 
   return {
-    formData, errors,onChange,
+    formData, 
+    errors,
+    onChange,
     validateForm
   }
 }

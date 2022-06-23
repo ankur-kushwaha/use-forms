@@ -18,7 +18,7 @@ export default function Forms() {
   let ageValidationFn = function (age, formData): string {
     console.log('validate', age, formData);
 
-    if (age == undefined || age < 10) {
+    if (age && age < 10) {
       return "age should be greater than 10"
     } else {
       return "";
@@ -55,6 +55,7 @@ export default function Forms() {
 
       <Input<FormSchema>
         type={"text"}
+        value={formData.name}
         isRequired
         id={"name"}
         label={"Name"}></Input>
@@ -62,10 +63,10 @@ export default function Forms() {
       <Input
         type={"number"}
         id={"age"}
-        label={"age"+formData.name}
+        label={"age"}
         max={{
           value:60,
-          msg:"Please enter value less than 60"
+          message:"Please enter value less than 60"
         }}
         validate={ageValidationFn}></Input>
 
