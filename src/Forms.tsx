@@ -2,11 +2,10 @@ import React from 'react'
 import { Button, Flex, Item, Picker, TextField, View } from '@adobe/react-spectrum';
 import { SpectrumTextFieldProps } from '@react-types/textfield';
 import { connect} from './common/Connect';
-import { useForms } from './common/FormProvider';
 import { connectPicker } from './common/ConnectPicker';
-// import Picker, { } from './ManagedComponents/Picker';
+import { useForms } from './common/useForm';
 
-type FormSchema = {
+export type FormSchema = {
   name: string,
   age2:number,
   age: number,
@@ -20,7 +19,6 @@ export default function Forms() {
   const { formData, errors, validateForm } = useForms<FormSchema>()
   console.log('Rendering forms',{ formData, errors });
 
-
   let ageValidationFn = function (age): string {
     console.log('validate', age, formData);
 
@@ -31,13 +29,14 @@ export default function Forms() {
     }
   }
 
-  
-
   const hasErrors = Object.values(errors).filter(item => item).length > 0
 
   function handleSubmit() {
-    validateForm?.();
-    console.log(formData);
+    let isValid = validateForm?.();
+
+    if(isValid){
+      console.log("Submitting form",formData);
+    }
   }
 
   let items = [

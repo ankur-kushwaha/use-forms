@@ -10,10 +10,7 @@ type ConnectPickerProps<S, T> = ConnectProps<S, T> & {
 
 export function connectOnSelection<S, T>(Component) {
   return function Connect(props: ConnectPickerProps<S, T>) {
-    const { onChange } = useContext(FormContext)
-
     function handleOnSelectionChange(value) {
-      onChange?.(props.id, value)
       props.onSelectionChange?.(value)
       props.onChange?.(value)
     }

@@ -1,6 +1,6 @@
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { connectOnSelection } from "./ConnectPicker";
-import { FormContext } from "./FormProvider";
+import { FormContext, FormContextProps } from "./FormProvider";
 
 
 type Max = {
@@ -38,7 +38,7 @@ export function connectOnChange<S, T>(Component) {
 
     const { id, max, validate } = props;
 
-    const { formData, onChange, setFormError, register } = useContext(FormContext);
+    const { formData, onChange, setFormError, register } = useContext<FormContextProps<S>>(FormContext);
     const [error, setError] = useState({
       errorMsg: ""
     })
@@ -47,7 +47,7 @@ export function connectOnChange<S, T>(Component) {
       console.log('registering', { id });
 
       register?.(id, {
-        validate: handleOnChange
+        validate: validateInput
       })
     }, []);
 
@@ -64,6 +64,7 @@ export function connectOnChange<S, T>(Component) {
         errorMsg: errorMsg || ""
       })
       setFormError?.(id, errorMsg)
+      return errorMsg;
     }
 
     function handleOnChange(value) {

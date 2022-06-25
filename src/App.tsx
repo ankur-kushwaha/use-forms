@@ -2,9 +2,10 @@ import React from 'react';
 import logo from './logo.svg';
 import { Button, defaultTheme, Flex, Provider } from '@adobe/react-spectrum';
 import './App.css';
-import { FormProvider } from './common/FormProvider';
-import Forms from './Forms';
+// import { FormProvider } from './common/FormProvider';
+import Forms, { FormSchema } from './Forms';
 import Forms2 from './Forms2';
+import {  FormProvider, FormContext } from './common/FormProvider';
 
 
 function App() {

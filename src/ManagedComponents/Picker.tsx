@@ -1,8 +1,7 @@
 import { Item, Item as RSItem, Picker } from '@adobe/react-spectrum'
-import React, { ReactNode } from 'react'
-import { useForms } from '../common/FormProvider'
+import React, { ReactNode, useContext } from 'react'
 import { SpectrumPickerProps } from "@react-types/select";
-
+import { FormContext } from '../common/FormProvider';
 
 type ManagedPickerProps<T> = SpectrumPickerProps<any> & {
   id:keyof T,
@@ -12,13 +11,12 @@ type ManagedPickerProps<T> = SpectrumPickerProps<any> & {
 
 export default function ManagedPicker<T>(props:ManagedPickerProps<T>) {
   const { children, ...otherProps } = props
+  const {onChange} = useContext(FormContext)
 
-  const {onChange} = useForms();
-
-  function handleOnSelectionChange(value){
+  const handleOnSelectionChange = React.useCallback((value)=>{
     onChange?.(props.id,value)
     props.onSelectionChange?.(value)
-  }
+  },[])
 
   return (
     <Picker {...otherProps} onSelectionChange={handleOnSelectionChange}>
