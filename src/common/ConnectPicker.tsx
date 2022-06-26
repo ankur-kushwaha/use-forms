@@ -10,10 +10,10 @@ export function connectOnSelection(Component): React.FC<ConnectPickerProps> {
 
     const {onSelectionChange,onChange} = props;
 
-    const handleOnSelectionChange = React.useCallback((value: any) =>{
+    const handleOnSelectionChange = (value: any) =>{
       onSelectionChange?.(value)
       onChange?.(value)
-    },[onChange, onSelectionChange]);
+    }
     
     return <Component {...props} onSelectionChange={handleOnSelectionChange} />
   }

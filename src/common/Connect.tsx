@@ -62,7 +62,7 @@ export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTex
       errorMsg: ""
     })
 
-    const validateInput = React.useCallback((value) =>{
+    const validateInput =(value) =>{
       console.log('Validating input', id, value);
 
 
@@ -80,7 +80,7 @@ export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTex
       })
       setFormError?.(id, errorMsg)
       return errorMsg;
-    },[errorMessage, id, isRequired, max, min, props, setFormError, validate])
+    }
 
     useEffect(() => {
       console.log('registering', { id });
@@ -91,10 +91,10 @@ export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTex
     }, [id, register]);
 
 
-    const handleOnChange = React.useCallback((value) =>{
+    const handleOnChange =(value) =>{
       validateInput(value);
       onChange?.(id, value)
-    },[id, onChange, validateInput])
+    }
 
     return <Component {...props} validationState={error.errorMsg ? "invalid" : "valid"} errorMessage={error.errorMsg} onChange={handleOnChange} />
   }

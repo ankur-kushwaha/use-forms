@@ -13,10 +13,10 @@ export default function ManagedPicker<T>(props:ManagedPickerProps<T>) {
   const { children, ...otherProps } = props
   const {onChange} = useContext(FormContext)
 
-  const handleOnSelectionChange = React.useCallback((value)=>{
+  const handleOnSelectionChange = (value)=>{
     onChange?.(props.id,value)
     props.onSelectionChange?.(value)
-  },[])
+  }
 
   return (
     <Picker {...otherProps} onSelectionChange={handleOnSelectionChange}>

@@ -43,7 +43,7 @@ export function FormProvider({ children }) {
     })
   }, [])
 
-  const validateForm = React.useCallback(() => {
+  const validateForm =() => {
     console.log('validating form', formValidations);
 
     let isValid = true;
@@ -53,7 +53,7 @@ export function FormProvider({ children }) {
       isValid = isValid && !errorMsg;
     }
     return isValid;
-  }, [formData, formValidations])
+  }
 
   return (
     <FormContext.Provider value={{ errors, formData, onChange, setFormError, register, validateForm }}>
