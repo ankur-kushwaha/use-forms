@@ -2,12 +2,9 @@ import React from 'react'
 import { Button, Flex, Item, View, TextField as RSTextField,Picker as RSPicker } from '@adobe/react-spectrum';
 import { SpectrumTextFieldProps } from '@react-types/textfield';
 import { connect } from './common/Connect';
-// import { connectPicker } from './common/ConnectPicker';
 import { useForms } from './common/useForm';
 import { SpectrumPickerProps } from "@react-types/select";
 import { connectOnSelection } from './common/ConnectPicker';
-// import { TextField ,Picker} from './ManagedComponents';
-
 
 export type FormSchema = {
   name: string,
@@ -56,7 +53,6 @@ export default function Forms() {
   return (<View padding={30}>
     <Flex direction={"column"} gap="size-150" wrap>
       <br />
-
       <header>
         <Flex direction={"row-reverse"}>
           <Button isDisabled={hasErrors} onPress={handleSubmit} variant="cta">Save</Button>

@@ -19,7 +19,3 @@ export function connectOnSelection(Component): React.FC<ConnectPickerProps> {
   }
 }
 
-// export function connectPicker<S>(Component) {
-//   return connect<S,SpectrumPickerProps<{}>>(connectOnSelection<S,SpectrumPickerProps<{}>>(Component));
-// }
-

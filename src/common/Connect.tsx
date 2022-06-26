@@ -1,8 +1,8 @@
 
 
-import React,{ ReactComponentElement, ReactElement, ReactNode, useContext, useEffect, useState } from "react";
-import { connectOnSelection } from "./ConnectPicker";
+import React,{ ReactNode, useContext, useEffect, useState } from "react";
 import { FormContext, FormContextProps } from "./FormProvider";
+import { SpectrumTextFieldProps } from '@react-types/textfield';
 
 type Max = {
   value: number,
@@ -27,7 +27,7 @@ function validateRequired(value, isRequired) {
 
 export type ConnectBaseProps<S>= {
   children?: ReactNode,
-  id: keyof S,
+  id: keyof S & string,
   isRequired?: boolean;
   label: string, value?: string,
   max?: Max,
@@ -36,10 +36,11 @@ export type ConnectBaseProps<S>= {
   validate?: (value) => string
 }
 
+type Connect = (Component: React.FunctionComponent<any>) => React.FunctionComponent<any>
 
-export function connectOnChange<T>(Component):React.FunctionComponent<ConnectBaseProps<T>>{
+export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTextFieldProps>):React.FunctionComponent<ConnectBaseProps<T>>{
   
-  return (props: ConnectBaseProps<T>)=> {
+  return (props:ConnectBaseProps<T>)=> {
 
     const { id, max, validate,isRequired } = props;
 
@@ -82,29 +83,21 @@ export function connectOnChange<T>(Component):React.FunctionComponent<ConnectBas
   }
 }
 
-type Connect = (Comp:ReactElement)=>React.FunctionComponent
-
-
-let connects:Connect[] = []
-export function registerConnect(connectOnFn)  {
-  console.log('registerConnect');
-  connects.push(connectOnFn);
-}
-
-
 export function connect<S,T>(Component,optionalConnects?:Connect[]) {
+  let connects:Connect[] = [];
+
+  //register default 
+  connects.push(connectOnChange);
+
   if(optionalConnects && optionalConnects.length){
     connects = connects.concat(optionalConnects);
   }
-  console.log('Connect called for ',Component,connects.length);
+
+  console.log('connected plugins',connects);
   
   let Comp = Component;
   for(let connectPlugin of connects.reverse()){
-    console.log({connectPlugin});
     Comp = connectPlugin(Comp)
   }
   return Comp as React.FunctionComponent<ConnectBaseProps<S> & T>
 };
-
-// registerConnect(connectOnSelection)
-registerConnect(connectOnChange)
