@@ -6,7 +6,8 @@ import './App.css';
 import Forms, { FormSchema } from './Forms';
 import Forms2 from './Forms2';
 import {  FormProvider, FormContext } from './common/FormProvider';
-
+import { connectOnChange, registerConnect } from './common/Connect';
+import { connectOnSelection } from './common/ConnectPicker';
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
       <Provider theme={defaultTheme}>
         <Flex>
           <div>
-            <FormProvider>
+            <FormProvider >
               <Forms></Forms>
             </FormProvider>
           </div>

@@ -1,9 +1,13 @@
 import React from 'react'
-import { Button, Flex, Item, Picker, TextField, View } from '@adobe/react-spectrum';
+import { Button, Flex, Item, View, TextField as RSTextField,Picker as RSPicker } from '@adobe/react-spectrum';
 import { SpectrumTextFieldProps } from '@react-types/textfield';
-import { connect} from './common/Connect';
-import { connectPicker } from './common/ConnectPicker';
+import { connect } from './common/Connect';
+// import { connectPicker } from './common/ConnectPicker';
 import { useForms } from './common/useForm';
+import { SpectrumPickerProps } from "@react-types/select";
+import { connectOnSelection } from './common/ConnectPicker';
+// import { TextField ,Picker} from './ManagedComponents';
+
 
 export type FormSchema = {
   name: string,
@@ -12,14 +16,15 @@ export type FormSchema = {
   frequency: string
 }
 
-let Input3 = connect<FormSchema, SpectrumTextFieldProps>(TextField)
-let ConnectedPicker = connectPicker<FormSchema>(Picker);
+let TextField = connect<FormSchema,SpectrumTextFieldProps>(RSTextField);
+let Picker = connect<FormSchema,SpectrumPickerProps<{}>>(RSPicker,[connectOnSelection]);
 
 export default function Forms() {
+
   const { formData, errors, validateForm } = useForms<FormSchema>()
   console.log('Rendering forms',{ formData, errors });
 
-  let ageValidationFn = function (age): string {
+  let ageValidationFn = React.useCallback((age)=> {
     console.log('validate', age, formData);
 
     if (age && age < 10) {
@@ -27,7 +32,7 @@ export default function Forms() {
     } else {
       return "";
     }
-  }
+  },[formData])
 
   const hasErrors = Object.values(errors).filter(item => item).length > 0
 
@@ -58,15 +63,15 @@ export default function Forms() {
         </Flex>
       </header>
 
-      <Input3
+      <TextField
         type={"text"}
         value={formData.name}
         isRequired
         id={"name"}
         label={"Name"}
-      ></Input3>
+      ></TextField>
 
-      <Input3
+      <TextField
         type={"number"}
         id={"age2"}
         label={"age2"}
@@ -74,9 +79,9 @@ export default function Forms() {
           value: 60,
           message: "Please enter value less than 60"
         }}
-        validate={ageValidationFn}></Input3>
+        validate={ageValidationFn}></TextField>
 
-      <Input3
+      <TextField
         type={"number"}
         id={"age"}
         label={"age"}
@@ -85,11 +90,13 @@ export default function Forms() {
           value: 60,
           message: "Please enter value less than 60"
         }}
-        validate={ageValidationFn}></Input3>
+        validate={ageValidationFn}></TextField>
 
-      <ConnectedPicker isRequired id="frequency" label="Choose frequency" >
+      <Picker 
+      isRequired id="frequency" label="Choose frequency" 
+      >
         {items?.map?.(item=><Item key={item.value}>{item.text}</Item>)}
-      </ConnectedPicker>
+      </Picker>
 
     </Flex>
     <hr />

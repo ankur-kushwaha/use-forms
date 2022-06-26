@@ -1,7 +1,8 @@
-import { ReactNode, useContext, useEffect, useState } from "react";
+
+
+import React,{ ReactComponentElement, ReactElement, ReactNode, useContext, useEffect, useState } from "react";
 import { connectOnSelection } from "./ConnectPicker";
 import { FormContext, FormContextProps } from "./FormProvider";
-
 
 type Max = {
   value: number,
@@ -16,13 +17,15 @@ function maxValidation(value: number, max?: Max) {
   }
 }
 
-function validateRequired(value, props) {
-  if (!value && props.isRequired) {
+function validateRequired(value, isRequired) {
+  if (!value && isRequired) {
     return "Required"
   }
 }
 
-export type ConnectProps<S, T> = T & {
+
+
+export type ConnectBaseProps<S>= {
   children?: ReactNode,
   id: keyof S,
   isRequired?: boolean;
@@ -30,34 +33,28 @@ export type ConnectProps<S, T> = T & {
   max?: Max,
   min?: Max,
   errorMessage?: string,
-  validate?: (value, formData: S) => string
+  validate?: (value) => string
 }
 
-export function connectOnChange<S, T>(Component) {
-  return function Connect(props: ConnectProps<S, T>) {
 
-    const { id, max, validate } = props;
+export function connectOnChange<T>(Component):React.FunctionComponent<ConnectBaseProps<T>>{
+  
+  return (props: ConnectBaseProps<T>)=> {
 
-    const { formData, onChange, setFormError, register } = useContext<FormContextProps<S>>(FormContext);
+    const { id, max, validate,isRequired } = props;
+
+    const {  onChange, setFormError, register } = useContext<FormContextProps>(FormContext);
     const [error, setError] = useState({
       errorMsg: ""
     })
 
-    useEffect(() => {
-      console.log('registering', { id });
-
-      register?.(id, {
-        validate: validateInput
-      })
-    }, []);
-
-    function validateInput(value) {
+    const validateInput = React.useCallback((value) =>{
       console.log('Validating input', id, value);
 
-      let errorMsg = validateRequired(value, props) || maxValidation(value, max)
+      let errorMsg = validateRequired(value, isRequired) || maxValidation(value, max)
 
       if (!errorMsg && validate) {
-        errorMsg = validate(value, formData);
+        errorMsg = validate(value);
       }
 
       setError({
@@ -65,17 +62,49 @@ export function connectOnChange<S, T>(Component) {
       })
       setFormError?.(id, errorMsg)
       return errorMsg;
-    }
+    },[id, isRequired, max, setFormError, validate])
 
-    function handleOnChange(value) {
+    useEffect(() => {
+      console.log('registering', { id });
+
+      register?.(id, {
+        validate: validateInput
+      })
+    }, [id, register]);
+
+
+    const handleOnChange = React.useCallback((value) =>{
       validateInput(value);
       onChange?.(id, value)
-    }
+    },[id, onChange, validateInput])
 
     return <Component {...props} validationState={error.errorMsg ? "invalid" : "valid"} errorMessage={error.errorMsg} onChange={handleOnChange} />
   }
 }
 
-export function connect<S, T>(Component) {
-  return connectOnChange<S, T>(Component);
+type Connect = (Comp:ReactElement)=>React.FunctionComponent
+
+
+let connects:Connect[] = []
+export function registerConnect(connectOnFn)  {
+  console.log('registerConnect');
+  connects.push(connectOnFn);
 }
+
+
+export function connect<S,T>(Component,optionalConnects?:Connect[]) {
+  if(optionalConnects && optionalConnects.length){
+    connects = connects.concat(optionalConnects);
+  }
+  console.log('Connect called for ',Component,connects.length);
+  
+  let Comp = Component;
+  for(let connectPlugin of connects.reverse()){
+    console.log({connectPlugin});
+    Comp = connectPlugin(Comp)
+  }
+  return Comp as React.FunctionComponent<ConnectBaseProps<S> & T>
+};
+
+// registerConnect(connectOnSelection)
+registerConnect(connectOnChange)
