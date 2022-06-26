@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export type FormContextProps<S = any> = {
   formData: S,
   errors: {
@@ -15,7 +14,7 @@ export type FormContextProps<S = any> = {
 export function FormProvider({ children }) {
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
-  const [formValidations, setFormValidations] = React.useState<FormElement[]>([]);
+  const [formValidations, setFormValidations] = React.useState({});
 
   const onChange = React.useCallback((key, value) => {
     setFormData(formData => {
@@ -72,8 +71,4 @@ export {
   FormContext
 }
 
-
-type FormElement = {
-
-}
 

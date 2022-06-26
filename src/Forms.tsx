@@ -1,5 +1,7 @@
 import React from 'react'
-import { Button, Flex, Item, View, TextField as RSTextField,Picker as RSPicker } from '@adobe/react-spectrum';
+import { Button, Flex, Item, View, TextField as RSTextField,Picker as RSPicker, DatePicker as RSDatePicker } from '@adobe/react-spectrum';
+import { DateValue, SpectrumCalendarProps, SpectrumRangeCalendarProps } from "@react-types/calendar";
+
 import { SpectrumTextFieldProps } from '@react-types/textfield';
 import { connect } from './common/Connect';
 import { useForms } from './common/useForm';
@@ -10,10 +12,12 @@ export type FormSchema = {
   name: string,
   age2:number,
   age: number,
-  frequency: string
+  frequency: string,
+  date:string
 }
 
 let TextField = connect<FormSchema,SpectrumTextFieldProps>(RSTextField);
+let DatePicker = connect<FormSchema,SpectrumCalendarProps<any>>(RSDatePicker);
 let Picker = connect<FormSchema,SpectrumPickerProps<{}>>(RSPicker,[connectOnSelection]);
 
 export default function Forms() {
@@ -93,6 +97,12 @@ export default function Forms() {
       >
         {items?.map?.(item=><Item key={item.value}>{item.text}</Item>)}
       </Picker>
+
+      <DatePicker
+      isRequired
+        id={"date"}
+        label={"Date"}
+      />
 
     </Flex>
     <hr />

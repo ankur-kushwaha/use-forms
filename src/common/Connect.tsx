@@ -17,13 +17,26 @@ function maxValidation(value: number, max?: Max) {
   }
 }
 
+function minValidation(value: number, max?: Max) {
+  if (max && max.value) {
+    if (value && value < max.value) {
+      return max.message
+    }
+  }
+}
+
+
 function validateRequired(value, isRequired) {
   if (!value && isRequired) {
     return "Required"
   }
 }
 
-
+function validateEmail(value,type,errorMessage){
+  if(type === 'email' && !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))){
+    return errorMessage||'Invalid email'
+  }
+} 
 
 export type ConnectBaseProps<S>= {
   children?: ReactNode,
@@ -42,7 +55,7 @@ export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTex
   
   return (props:ConnectBaseProps<T>)=> {
 
-    const { id, max, validate,isRequired } = props;
+    const { id, max,min, validate,isRequired ,errorMessage} = props;
 
     const {  onChange, setFormError, register } = useContext<FormContextProps>(FormContext);
     const [error, setError] = useState({
@@ -52,10 +65,14 @@ export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTex
     const validateInput = React.useCallback((value) =>{
       console.log('Validating input', id, value);
 
-      let errorMsg = validateRequired(value, isRequired) || maxValidation(value, max)
 
-      if (!errorMsg && validate) {
+      let errorMsg;
+      if(validate){
         errorMsg = validate(value);
+      }
+
+      if (!errorMsg) {
+        errorMsg = validateRequired(value, isRequired) || maxValidation(value, max) || minValidation(value, min)||validateEmail(value,props["type"],errorMessage)
       }
 
       setError({
@@ -63,7 +80,7 @@ export function connectOnChange<T>(Component:React.FunctionComponent<SpectrumTex
       })
       setFormError?.(id, errorMsg)
       return errorMsg;
-    },[id, isRequired, max, setFormError, validate])
+    },[errorMessage, id, isRequired, max, min, props, setFormError, validate])
 
     useEffect(() => {
       console.log('registering', { id });
