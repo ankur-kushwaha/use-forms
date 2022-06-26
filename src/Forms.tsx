@@ -1,12 +1,12 @@
 import React from 'react'
 import { Button, Flex, Item, View, TextField as RSTextField,Picker as RSPicker, DatePicker as RSDatePicker } from '@adobe/react-spectrum';
-import { DateValue, SpectrumCalendarProps, SpectrumRangeCalendarProps } from "@react-types/calendar";
+// import { DateValue, SpectrumCalendarProps, SpectrumRangeCalendarProps } from "@react-types/calendar";
 
 import { SpectrumTextFieldProps } from '@react-types/textfield';
-import { connect } from './common/Connect';
 import { useForms } from './common/useForm';
 import { SpectrumPickerProps } from "@react-types/select";
-import { connectOnSelection } from './common/ConnectPicker';
+import { connectOnSelection } from './common/connectOnSelection';
+import { connect } from './common/connect';
 
 export type FormSchema = {
   name: string,
@@ -17,8 +17,8 @@ export type FormSchema = {
 }
 
 let TextField = connect<FormSchema,SpectrumTextFieldProps>(RSTextField);
-let DatePicker = connect<FormSchema,SpectrumCalendarProps<any>>(RSDatePicker);
 let Picker = connect<FormSchema,SpectrumPickerProps<{}>>(RSPicker,[connectOnSelection]);
+// let DatePicker = connect<FormSchema,SpectrumCalendarProps<any>>(RSDatePicker);
 
 export default function Forms() {
 
@@ -64,8 +64,8 @@ export default function Forms() {
       </header>
 
       <TextField
+        defaultValue='test'
         type={"text"}
-        value={formData.name}
         isRequired
         id={"name"}
         label={"Name"}
@@ -92,17 +92,17 @@ export default function Forms() {
         }}
         validate={ageValidationFn}></TextField>
 
-      <Picker 
+       <Picker 
       isRequired id="frequency" label="Choose frequency" 
       >
         {items?.map?.(item=><Item key={item.value}>{item.text}</Item>)}
       </Picker>
-
+{/*
       <DatePicker
       isRequired
         id={"date"}
         label={"Date"}
-      />
+      /> */}
 
     </Flex>
     <hr />

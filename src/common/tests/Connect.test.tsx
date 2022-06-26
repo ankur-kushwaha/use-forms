@@ -2,12 +2,11 @@ import { TextField } from '@adobe/react-spectrum';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { FormSchema } from '../../Forms';
-import { connect, connectOnChange } from '../Connect';
 import { FormProvider } from '../FormProvider';
 import { useForms } from '../useForm';
-import { Button, Flex, Item, View, TextField as RSTextField, Picker as RSPicker, DatePicker as RSDatePicker } from '@adobe/react-spectrum';
-import { DateValue, SpectrumCalendarProps, SpectrumRangeCalendarProps } from "@react-types/calendar";
+import {  TextField as RSTextField} from '@adobe/react-spectrum';
 import { SpectrumTextFieldProps } from '@react-types/textfield';
+import { connect } from '../connect';
 
 
 function TestForm({ onChange, children }) {
@@ -33,7 +32,7 @@ describe('first', () => {
       name: string
     }
 
-    let Test2 = connectOnChange<FormSchema>(TextField)
+    let Test2 = connect<FormSchema, SpectrumTextFieldProps>(RSTextField);
 
     let mockFn = jest.fn();
 
@@ -61,8 +60,7 @@ describe('first', () => {
       name: string
     }
 
-    let Test2 = connectOnChange<FormSchema>(TextField)
-
+    let Test2 = connect<FormSchema, SpectrumTextFieldProps>(RSTextField);
     let mockFn = jest.fn();
 
     render(<FormProvider>
@@ -99,7 +97,7 @@ describe('first', () => {
       name: string
     }
 
-    let Test2 = connectOnChange<FormSchema>(TextField)
+    let Test2 = connect<FormSchema, SpectrumTextFieldProps>(RSTextField);
 
     let mockFn = jest.fn();
 
